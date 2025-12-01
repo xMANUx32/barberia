@@ -1,0 +1,236 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #0e0e0e;
+  color: #f5f5f5;
+  margin: 0;
+}
+
+.header {
+  background: url('https://img.freepik.com/fotos-premium/varios-utensilios-barberia-orden_140282-2928.jpg') center/cover no-repeat;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.header-content {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  color: #fff;
+}
+
+.header-content h1 {
+  font-size: 5rem;
+  font-weight: 800;
+}
+
+.btn-dark {
+  border-radius: 20px;
+  padding: 10px 25px;
+  transition: all 0.3s ease;
+  color: #fff;
+  background-color: #222;
+}
+
+.btn-dark:hover {
+  background-color: #444;
+  transform: scale(1.05);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #000000;
+}
+.barber-card {
+  background-color: #1c1c1c;
+  border-radius: 1rem;
+  transition: transform 0.3s ease;
+}
+.barber-card:hover {
+  transform: translateY(-10px);
+}
+
+.barber-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.barber-info {
+  padding: 1rem;
+}
+
+.barber-info h5 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.barber-info p {
+  color: #ccc;
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 0.5em 0.75em;
+  border-radius: 0.5rem;
+}
+footer {
+  background-color: #111;
+  text-align: center;
+  padding: 20px 0;
+  color: #aaa;
+  margin-top: 4rem;
+}
+
+.form-control {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+.form-control::placeholder {
+  color: #888;
+}
+
+
+.clip {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+.svg--source {
+  display: none;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center; /* CENTRA LOS ICONOS */
+  margin-top: -10px; /* súbelo si quieres */
+}
+
+
+.share:focus {
+  outline-color: inherit;
+}
+
+
+.infobarbero{
+  color: aqua;
+}
+
+
+nav.navbar {
+  background-color: transparent !important;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 15;
+}
+
+/* Para cuando se fija arriba */
+.navbar.fixed-top {
+  position: fixed !important;
+  top: 0;
+  width: 100%;
+  z-index: 1050;
+  background-color: rgb(26, 26, 26) !important;
+  animation: slideDown 0.5s ease-in-out;
+}
+
+/* Animación de aparición */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+
+.logo-img {
+  height: 60px;
+}
+
+@media (max-width: 768px) {
+  .logo-img {
+    height: 60px;
+  }
+}
+
+#a-nav{
+  color: white;
+}
+
+.nav-link {
+  color: white !important;
+  font-weight: bold;
+}
+
+html {
+  scroll-padding-top: 120px; /* Altura aproximada del navbar */
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 100px; /* Mayor espacio para móviles */
+  }
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+
+
+.footer {
+    padding: 20px;
+    color: #aaa;
+}
+
+/* copyright arriba centrado */
+.footer > p {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* zona inferior del footer → izquierda textos, centro iconos */
+.footer-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;  /* izquierda - centro - derecha */
+    align-items: center;
+}
+
+/* Gmail + Teléfono */
+#contactos {
+    text-align: left;
+}
+
+/* Íconos centrados */
+.wrapper {
+    display: flex;
+    justify-content: center; /* centra iconos */
+    align-items: center;
+}

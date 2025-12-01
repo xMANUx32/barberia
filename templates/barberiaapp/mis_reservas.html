@@ -1,0 +1,308 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Reservas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+
+  <style>
+    body {
+      background: #84848c;
+      background: radial-gradient(circle, rgba(132, 132, 140, 1) 0%, rgba(0, 0, 0, 1) 100%) no-repeat fixed;
+      color: white;
+    }
+
+    .card {
+      background-color: #e7e7e7;
+      border: none;
+      color: rgb(0, 0, 0);
+    }
+    @media (max-width: 576px) {
+  .container.py-5 {
+    padding: 1.5rem 1rem !important;
+  }
+
+  h2.text-center.mb-4 {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 1rem !important;
+  }
+
+  .card .fs-1 {
+    font-size: 2rem !important;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .card-text {
+    font-size: 0.95rem;
+  }
+
+  .btn,
+  .btn-sm {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+
+  .modal-content {
+    font-size: 0.95rem;
+  }
+
+  .modal-body label,
+  .modal-body input,
+  .modal-body select {
+    font-size: 0.95rem;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+  }
+
+  .btn-close {
+    transform: scale(0.9);
+  }
+
+  .text-center.mt-5 .btn {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
+  <div class="container py-5">
+    <h2 class="text-center mb-4">Mis Reservas</h2>
+    
+    <form method="get" class="mb-4 text-center">
+  <label for="filtro" class="me-2 fw-bold">Filtrar por:</label>
+  <select name="filtro" id="filtro" class="form-select d-inline w-auto" onchange="this.form.submit()">
+    <option value="recientes" {% if filtro_actual == 'recientes' %}selected{% endif %}>Más recientes</option>
+    <option value="antiguas" {% if filtro_actual == 'antiguas' %}selected{% endif %}>Más antiguas</option>
+    <option value="pendientes" {% if filtro_actual == 'pendientes' %}selected{% endif %}>Pendientes</option>
+    <option value="realizadas" {% if filtro_actual == 'realizadas' %}selected{% endif %}>Realizadas</option>
+    <option value="canceladas" {% if filtro_actual == 'canceladas' %}selected{% endif %}>Canceladas</option>
+  </select>
+</form>
+
+    {% if reservas %}
+    <div class="row">
+      {% for reserva in reservas %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 p-3">
+          <div class="card-body d-flex flex-column">
+            <i class="bi bi-calendar-check text-center fs-1 mb-3 text-primary"></i>
+            <h5 class="card-title">{{ reserva.corte.titulo }}</h5>
+            <p class="card-text"><strong>Barbero:</strong> {{ reserva.barbero.nombre }}</p>
+            <p class="card-text"><strong>Fecha:</strong> {{ reserva.fecha }}</p>
+            <p class="card-text"><strong>Hora:</strong> {{ reserva.hora_inicio }} - {{ reserva.hora_fin }}</p>
+            <p>
+              <strong>Estado:</strong>
+              {% if reserva.estado == 'realizada' %}
+              <span class="badge bg-success">
+                <i class="bi bi-check-circle-fill"></i> Realizada
+              </span>
+              {% elif reserva.estado == 'no_asistio' %}
+              <span class="badge bg-danger">
+                <i class="bi bi-x-circle-fill"></i> No asistió
+              </span>
+              {% elif reserva.estado == 'cancelada' %}
+              <span class="badge bg-secondary">
+                <i class="bi bi-x-octagon-fill"></i> Cancelada
+              {% else %}
+              <span class="badge bg-warning text-dark">
+                <i class="bi bi-hourglass-split"></i> Pendiente
+              </span>
+              {% endif %}
+            </p>
+            <div class="mt-3 d-flex justify-content-between">
+              <!-- Botón para abrir modal de edición -->
+              <div class="mt-3 d-flex justify-content-between">
+
+              {% if reserva.puede_editar and reserva.estado != 'cancelada' and reserva.estado != 'realizada' %}
+                  <button class="btn btn-outline-primary btn-sm" 
+                data-bs-toggle="modal"
+                data-bs-target="#modalEditar{{ reserva.id }}">
+                  Editar
+                  </button>
+                {% else %}
+                 <button class="btn btn-outline-secondary btn-sm" disabled>No editable</button>
+              {% endif %}
+
+                {% if reserva.estado == 'cancelada' %}
+                <button class="btn btn-outline-secondary btn-sm" disabled>
+                    Cancelada
+                     </button>
+
+                    {% elif reserva.estado == 'realizada' %}
+                  <button class="btn btn-secondary btn-sm" disabled>
+                     No se puede cancelar (realizada)
+               </button>
+
+               {% else %}
+              {% if reserva.puede_cancelar %}
+              <form method="post" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="reserva_id" value="{{ reserva.id }}">
+                <input type="hidden" name="accion" value="cancelar">
+                <button type="submit" class="btn btn-outline-danger">
+                    Cancelar Reserva
+                </button>
+            </form>
+        {% else %}
+            <button class="btn btn-secondary btn-sm" disabled>
+                No se puede cancelar
+            </button>
+        {% endif %}
+    {% endif %}
+
+</div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de edición -->
+      <div class="modal fade" id="modalEditar{{ reserva.id }}" tabindex="-1"
+        aria-labelledby="modalLabel{{ reserva.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-dark shadow rounded-3">
+            <div class="modal-header bg-dark text-white rounded-top">
+              <h5 class="modal-title" id="modalLabel{{ reserva.id }}">Editar Reserva</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                aria-label="Cerrar"></button>
+            </div>
+
+            <form method="POST" class="edit-form">
+              {% csrf_token %}
+              <input type="hidden" name="accion" value="editar">
+              <input type="hidden" name="reserva_id" value="{{ reserva.id }}">
+
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="fecha-{{ reserva.id }}" class="form-label">Nueva fecha</label>
+                  <input type="date" name="nueva_fecha" id="fecha-{{ reserva.id }}" class="form-control fecha-cambio"
+                    data-barbero="{{ reserva.barbero.id }}" data-corte="{{ reserva.corte.id }}"
+                    data-select-id="hora-{{ reserva.id }}" value="{{ reserva.fecha }}" min="{{ today|date:'Y-m-d' }}">
+                </div>
+
+                <div class="mb-3">
+                  <label for="hora-{{ reserva.id }}" class="form-label">Nueva hora</label>
+                  <select name="nueva_hora" id="hora-{{ reserva.id }}" class="form-control">
+                    <option value="{{ reserva.hora_inicio }}">{{ reserva.hora_inicio }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-dark">Actualizar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center">No tienes reservas registradas aún.</p>
+    {% endif %}
+
+  </div>
+  <div class="container text-center mt-5 mb-5">
+    <a href="{% url 'index' %}" class="btn btn-light">Volver a Inicio</a>
+
+    <a href="{% url 'reservas' %}" class="btn btn-light">Volver a Reservar</a>
+
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputsFecha = document.querySelectorAll(".fecha-cambio");
+
+      inputsFecha.forEach(input => {
+        // ⚠️ Establecer el atributo "min" dinámico para bloquear fechas pasadas
+        const hoy = new Date().toISOString().split('T')[0];
+        input.setAttribute('min', hoy);
+
+        input.addEventListener("change", async function () {
+          const corteId = this.dataset.corte;
+          const barberoId = this.dataset.barbero;
+          const selectId = this.dataset.selectId;
+          const fecha = this.value;
+
+          const selectHora = document.getElementById(selectId);
+          if (!fecha) return;
+
+          selectHora.innerHTML = '<option>Cargando...</option>';
+
+          try {
+            const res = await fetch(`/api/horas-disponibles/?corte=${corteId}&fecha=${fecha}&barbero=${barberoId}`);
+            const horas = await res.json();
+
+            selectHora.innerHTML = "";
+
+            const ahora = new Date();
+            const hoy = ahora.toISOString().split('T')[0];
+            const horaActual = ahora.getHours().toString().padStart(2, '0') + ":" + ahora.getMinutes().toString().padStart(2, '0');
+
+            const esHoy = (fecha === hoy);
+
+            const horasFiltradas = esHoy
+              ? horas.filter(h => h > horaActual)  // 🔒 solo horas futuras si es hoy
+              : horas;
+
+            if (horasFiltradas.length === 0) {
+              const option = document.createElement("option");
+              option.value = "";
+              option.textContent = "Sin horas disponibles";
+              selectHora.appendChild(option);
+            } else {
+              horasFiltradas.forEach(hora => {
+                const option = document.createElement("option");
+                option.value = hora;
+                option.textContent = hora;
+                selectHora.appendChild(option);
+              });
+            }
+          } catch (error) {
+            console.error("Error al cargar horas:", error);
+            selectHora.innerHTML = '<option value="">Error al cargar</option>';
+          }
+        });
+      });
+    });
+  </script>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

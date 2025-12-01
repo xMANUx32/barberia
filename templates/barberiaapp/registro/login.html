@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+        <a href="{% url 'index' %}" class="btn-close" aria-label="Close" style="position: absolute; top: 15px; right: 15px; font-size: 15px;"></a>
+
+
+
+        <div class="user-icon">
+            <i class="bi bi-person"></i>
+        </div>
+        <h2>Bienvenido</h2>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message-box {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="username" class="form-control" placeholder="RUT (ej: 12345678-9)" required>
+            <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Recordarme</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Acceder</button>
+        </form>
+
+        <div class="extra-links">
+            <a href="{% url 'signup' %}">¿No tienes una cuenta?</a>
+            <a href="{% url 'solicitar_recuperacion' %}">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Icons (opcional para el ícono) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</body>
+</html>

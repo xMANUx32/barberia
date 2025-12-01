@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración - Blessed Barbershop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+</head>
+
+<body class="bg-black text-gray-200 font-sans min-h-screen">
+  <div class="max-w-7xl mx-auto p-4 md:p-8">
+    <!-- CABECERA -->
+    <header class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <a href="/" class="text-blue-400 hover:text-blue-200 text-sm flex items-center gap-2">
+        ← Volver al inicio
+      </a>
+      <h1 class="text-3xl md:text-4xl font-bold text-center text-white">Panel de Administración</h1>
+      <div class="text-sm text-gray-400">Blessed Barbershop 💈</div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="flex flex-wrap justify-center gap-3 mb-8">
+      <button onclick="mostrarSeccion('servicios')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-sm font-medium transition">Cortes</button>
+      <button onclick="mostrarSeccion('barberos')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-sm font-medium transition">Barberos</button>
+      <button onclick="mostrarSeccion('estadisticas')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-sm font-medium transition">Estadísticas</button>
+      <button onclick="mostrarSeccion('usuarios')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-sm font-medium transition">Usuarios</button>
+      <button onclick="mostrarSeccion('todos')" class="px-4 py-2 rounded-full bg-green-600 hover:bg-green-700 text-sm font-medium transition">Mostrar Todo</button>
+    </nav>
+
+    <!-- CONTENEDOR GENERAL -->
+    <section class="bg-neutral-900 rounded-2xl shadow-2xl p-6 md:p-10 space-y-12">
+
+      <!-- SECCIÓN: SERVICIOS -->
+      <div id="servicios" class="seccion-panel">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+          <h2 class="text-2xl font-semibold text-white">Servicios</h2>
+          <a href="{% url 'crear_corte' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">➕ Nuevo Servicio</a>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border border-gray-700 text-left rounded-xl overflow-hidden">
+            <thead class="bg-neutral-800 text-gray-300">
+              <tr>
+                <th class="p-3">Título</th>
+                <th class="p-3">Categoría</th>
+                <th class="p-3">Duración</th>
+                <th class="p-3">Precio</th>
+                <th class="p-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+              {% for corte in cortes %}
+              <tr class="hover:bg-neutral-800 transition">
+                <td class="p-3">{{ corte.titulo }}</td>
+                <td class="p-3 capitalize">{{ corte.categoria }}</td>
+                <td class="p-3">{{ corte.duracion }} min</td>
+                <td class="p-3">${{ corte.precio }}</td>
+                <td class="p-3 text-center">
+                  <a href="{% url 'editar_corte' corte.id %}" class="text-blue-400 hover:text-blue-300">Editar</a> |
+                  <a href="javascript:void(0)" onclick="confirmarEliminacion('{% url 'eliminar_corte' corte.id %}')" class="text-red-500 hover:text-red-400">🗑️ Eliminar</a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center p-6 text-gray-400">No hay servicios registrados.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: BARBEROS -->
+      <div id="barberos" class="seccion-panel hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-semibold text-white">Barberos</h2>
+          <a href="{% url 'crear_barbero' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">➕ Nuevo Barbero</a>
+        </div>
+        {% if barberos %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for barbero in barberos %}
+          <div class="bg-neutral-800 border border-gray-700 rounded-xl shadow-md p-5 hover:shadow-xl transition">
+            <h3 class="text-lg font-semibold text-white">{{ barbero.nombre }}</h3>
+            <p class="text-gray-400 text-sm mt-1"><strong>Descripción:</strong> {{ barbero.descripcion }}</p>
+            <p class="text-gray-400 text-sm"><strong>Especialidad:</strong> {{ barbero.especialidad }}</p>
+            <p class="text-gray-400 text-sm"><strong>RUT:</strong> {{ barbero.rut }}</p>
+            <div class="flex justify-between items-center mt-4">
+              <span class="{% if barbero.disponible %}text-green-400{% else %}text-red-400{% endif %}">
+                {% if barbero.disponible %}🟢 Disponible{% else %}🔴 No disponible{% endif %}
+              </span>
+              <a href="{% url 'cambiar_disponibilidad_barbero' barbero.id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">Cambiar</a>
+            </div>
+            <div class="flex justify-between mt-4 text-sm">
+              <a href="{% url 'editar_barbero' barbero.id %}" class="text-blue-400 hover:text-blue-300">✏️ Editar</a>
+              <a href="javascript:void(0)" onclick="confirmarEliminacion('{% url 'eliminar_barbero' barbero.id %}')" class="text-red-500 hover:text-red-400">🗑️ Eliminar</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-gray-400">No hay barberos registrados.</p>
+        {% endif %}
+      </div>
+
+      <!-- SECCIÓN: ESTADÍSTICAS -->
+      <div id="estadisticas" class="seccion-panel hidden">
+        <h2 class="text-2xl font-semibold text-white text-center mb-6">Estadísticas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div class="bg-neutral-800 p-5 rounded-xl shadow-lg">
+            <h3 class="text-blue-400 text-center mb-3 font-semibold">📅 Reservas por Semana</h3>
+            <canvas id="graficoSemanas"></canvas>
+          </div>
+          <div class="bg-neutral-800 p-5 rounded-xl shadow-lg">
+            <h3 class="text-blue-400 text-center mb-3 font-semibold">💈 Reservas por Barbero</h3>
+            <canvas id="graficoBarberos"></canvas>
+          </div>
+          <div class="bg-neutral-800 p-5 rounded-xl shadow-lg">
+            <h3 class="text-blue-400 text-center mb-3 font-semibold">✂️ Reservas por Tipo de Corte</h3>
+            <canvas id="graficoCortes"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: USUARIOS -->
+<div id="usuarios" class="seccion-panel hidden">
+  <h2 class="text-3xl font-bold text-center mb-8 text-white">Gestión de Usuarios</h2>
+
+  {% if clientes %}
+  <div class="bg-neutral-900 p-6 rounded-2xl shadow-xl">
+    <!-- Buscador y control de filas -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+      <div class="mb-3 md:mb-0">
+        <label for="tablaUsuarios_length" class="text-gray-300 mr-2">Mostrar:</label>
+        <select id="tablaUsuarios_length" class="bg-neutral-800 text-gray-300 px-3 py-1 rounded-lg">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="-1">Todos</option>
+        </select>
+        <span class="text-gray-400 ml-2">usuarios por página</span>
+      </div>
+
+      <div>
+        <input type="text" id="buscadorUsuarios" placeholder="🔍 Buscar usuarios..."
+          class="bg-neutral-800 text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 w-72 transition" />
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto max-h-[700px] overflow-y-auto rounded-xl border border-gray-700">
+      <table id="tablaUsuarios" class="min-w-full text-left text-gray-300">
+        <thead class="bg-neutral-800 sticky top-0 z-10">
+          <tr>
+            <th class="px-4 py-3">Nombre</th>
+            <th class="px-4 py-3">RUT</th>
+            <th class="px-4 py-3">Correo</th>
+            <th class="px-4 py-3">Estado</th>
+            <th class="px-4 py-3 text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+          {% for cliente in clientes %}
+          <tr class="hover:bg-neutral-800 transition">
+            <td class="px-4 py-3">{{ cliente.first_name }} {{ cliente.last_name }}</td>
+            <td class="px-4 py-3">{{ cliente.rut }}</td>
+            <td class="px-4 py-3">{{ cliente.email }}</td>
+            <td class="px-4 py-3">
+              {% if cliente.activo %}
+              <span class="text-green-400 font-semibold">🟢 Activo</span>
+              {% else %}
+              <span class="text-red-400 font-semibold">🔴 Bloqueado</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-center">
+              {% if cliente.activo %}
+              <a href="{% url 'bloquear_cliente' cliente.id %}"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm transition"
+                onclick="return confirmarAccion('¿Bloquear este usuario?');">Bloquear</a>
+              {% else %}
+              <a href="{% url 'desbloquear_cliente' cliente.id %}"
+                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm transition"
+                onclick="return confirmarAccion('¿Desbloquear este usuario?');">Desbloquear</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div id="paginationUsuarios" class="flex justify-center mt-6 space-x-2"></div>
+  </div>
+
+  {% else %}
+  <p class="text-center text-gray-400 mt-6">No hay usuarios registrados.</p>
+  {% endif %}
+</div>
+  <!-- Modal y Scripts -->
+  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-neutral-800 p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+      <h3 class="text-xl font-semibold text-white mb-4">¿Confirmar eliminación?</h3>
+      <p class="text-gray-400 mb-6">Esta acción no se puede deshacer.</p>
+      <div class="flex justify-center gap-4">
+        <button id="cancelBtn" class="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white">Cancelar</button>
+        <a id="confirmDeleteLink" href="#" class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white">Eliminar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery y DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.tailwindcss.css">
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const tabla = document.querySelector("#tablaUsuarios tbody");
+  const buscador = document.querySelector("#buscadorUsuarios");
+  const selector = document.querySelector("#tablaUsuarios_length");
+  const paginacion = document.querySelector("#paginationUsuarios");
+
+  let filas = Array.from(tabla.querySelectorAll("tr"));
+  let paginaActual = 1;
+  let filasPorPagina = parseInt(selector.value);
+
+  function mostrarPagina() {
+    let inicio = (paginaActual - 1) * filasPorPagina;
+    let fin = inicio + filasPorPagina;
+    filas.forEach((fila, i) => {
+      fila.style.display = i >= inicio && i < fin ? "" : "none";
+    });
+    actualizarPaginacion();
+  }
+
+  function actualizarPaginacion() {
+    paginacion.innerHTML = "";
+    const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+      const boton = document.createElement("button");
+      boton.textContent = i;
+      boton.className =
+        "px-3 py-1 rounded-md " +
+        (i === paginaActual
+          ? "bg-indigo-600 text-white"
+          : "bg-neutral-800 text-gray-300 hover:bg-neutral-700");
+      boton.onclick = () => {
+        paginaActual = i;
+        mostrarPagina();
+      };
+      paginacion.appendChild(boton);
+    }
+  }
+
+  buscador.addEventListener("input", function () {
+    const texto = this.value.toLowerCase();
+    filas.forEach((fila) => {
+      fila.style.display = fila.textContent.toLowerCase().includes(texto)
+        ? ""
+        : "none";
+    });
+  });
+
+  selector.addEventListener("change", function () {
+    filasPorPagina = parseInt(this.value);
+    paginaActual = 1;
+    mostrarPagina();
+  });
+
+  mostrarPagina();
+});
+</script>
+
+  <script>
+    function mostrarSeccion(id) {
+      const secciones = document.querySelectorAll('.seccion-panel');
+      if (id === 'todos') {
+        secciones.forEach(sec => sec.classList.remove('hidden'));
+      } else {
+        secciones.forEach(sec => sec.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+      }
+    }
+    mostrarSeccion('servicios');
+    function confirmarAccion(mensaje) { return confirm(mensaje); }
+  </script>
+
+  <script>
+    const reservasPorSemana = {{ reservas_por_semana|safe }};
+    const reservasPorBarbero = {{ reservas_por_barbero|safe }};
+    const reservasPorCorte = {{ reservas_por_corte|safe }};
+    const commonOpts = { responsive: true, plugins: { legend: { labels: { color: 'white' } } }, scales: { x: { ticks: { color: 'white' } }, y: { ticks: { color: 'white' }, beginAtZero: true } } };
+    new Chart(document.getElementById('graficoSemanas'), { type: 'bar', data: { labels: reservasPorSemana.map(r => 'Semana ' + r.semana), datasets: [{ label: 'Reservas', data: reservasPorSemana.map(r => r.total), backgroundColor: 'rgba(54, 162, 235, 0.7)' }] }, options: commonOpts });
+    new Chart(document.getElementById('graficoBarberos'), { type: 'doughnut', data: { labels: reservasPorBarbero.map(r => r.barbero__nombre), datasets: [{ data: reservasPorBarbero.map(r => r.total), backgroundColor: ['#60A5FA','#F472B6','#FBBF24','#34D399','#A78BFA'] }] }, options: commonOpts });
+    new Chart(document.getElementById('graficoCortes'), { type: 'pie', data: { labels: reservasPorCorte.map(r => r.corte__titulo), datasets: [{ data: reservasPorCorte.map(r => r.total), backgroundColor: ['#F87171','#60A5FA','#34D399','#FBBF24','#A78BFA'] }] }, options: commonOpts });
+  </script>
+
+  <script>
+    const modal = document.getElementById('confirmModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const confirmLink = document.getElementById('confirmDeleteLink');
+    function confirmarEliminacion(url) {
+      confirmLink.href = url;
+      modal.classList.remove('hidden');
+    }
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    window.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+  </script>
+</body>
+</html>

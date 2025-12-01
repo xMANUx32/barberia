@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Servicio | Blessed Barbershop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+</head>
+<body class="bg-black text-gray-200 p-8">
+    <div class="max-w-xl mx-auto bg-neutral-900 p-6 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-center mb-6">Editar Servicio</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block mb-1">Categoría</label>
+                <select name="categoria" class="w-full p-2 rounded bg-neutral-800 text-white">
+                    <option value="barba" {% if corte.categoria == "barba" %}selected{% endif %}>Barba</option>
+                    <option value="cabello" {% if corte.categoria == "cabello" %}selected{% endif %}>Cabello</option>
+                    <option value="combo" {% if corte.categoria == "combo" %}selected{% endif %}>Cabello + Barba</option>
+                    <option value="premium" {% if corte.categoria == "premium" %}selected{% endif %}>Otros</option>
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1">Título</label>
+                <input type="text" name="titulo" value="{{ corte.titulo }}" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Duración (minutos)</label>
+                <input type="number" name="duracion" value="{{ corte.duracion }}" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Precio</label>
+                <input type="number" name="precio" value="{{ corte.precio }}" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Descripción</label>
+                <textarea name="descripcion" rows="4" required class="w-full p-2 rounded bg-neutral-800 text-white">{{ corte.descripcion }}</textarea>
+            </div>
+            <div class="flex justify-between mt-4">
+                <a href="{% url 'panel_servicios' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Cancelar</a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

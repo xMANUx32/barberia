@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Barbero</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Agregar Nuevo Barbero</h1>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-gray-700">Nombre:</label>
+                <input type="text" name="nombre" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Descripción:</label>
+                <input type="text" name="descripcion" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Cortes destacados:</label>
+                <textarea name="cortes_destacados" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Especialidad:</label>
+                <input type="text" name="especialidad" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">RUT:</label>
+                <input type="text" name="rut" required maxlength="12" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Contraseña:</label>
+                <input type="password" name="contraseña" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <a href="{% url 'panel_servicios' %}" class="text-gray-600 hover:underline">← Volver al panel</a>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Guardar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

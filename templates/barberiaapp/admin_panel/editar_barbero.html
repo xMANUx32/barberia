@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Barbero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Editar Barbero</h1>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-gray-700">Nombre:</label>
+                <input type="text" name="nombre" value="{{ barbero.nombre }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Descripción:</label>
+                <input type="text" name="descripcion" value="{{ barbero.descripcion }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Cortes destacados:</label>
+                <textarea name="cortes_destacados" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2">{{ barbero.cortes_destacados }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Especialidad:</label>
+                <input type="text" name="especialidad" value="{{ barbero.especialidad }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">RUT:</label>
+                <input type="text" name="rut" value="{{ barbero.rut }}" maxlength="12" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Contraseña:</label>
+                <input type="password" name="contraseña" value="{{ barbero.contraseña }}" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <a href="{% url 'panel_servicios' %}" class="text-gray-600 hover:underline">← Volver al panel</a>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

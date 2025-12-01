@@ -1,0 +1,138 @@
+/* static/css/chatbox.css */
+
+#chat-content {
+    height: 300px;       /* Ajusta la altura como prefieras */
+    overflow-y: auto;    /* Permite scroll vertical */
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+#chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 26px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+#chat-button:hover {
+  background-color: #0056b3;
+}
+
+#chatbox {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 320px;
+  max-height: 480px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbox-header {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbox-header button {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.chatbox-body {
+  padding: 10px;
+  background: #f9f9f9;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.msg {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  font-size: 14px;
+}
+
+.msg.bot {
+  background-color: #e4e6eb;
+  text-align: left;
+}
+
+.msg.user {
+  background-color: #d0e6ff;
+  text-align: right;
+  margin-left: auto;
+}
+
+.msg-options {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.msg-options button {
+  padding: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.msg-options button:hover {
+  background: #0056b3;
+}
+
+
+/* Estilo contenedor botones */
+.botones-barberos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+/* Estilo de cada botón de barbero */
+.btn-barbero {
+  padding: 8px 14px;
+  background-color: #f1f1f1;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-barbero:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}

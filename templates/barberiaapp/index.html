@@ -1,0 +1,288 @@
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blessed Barbershop</title>
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/chatbox.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent px-3 py-2">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand fw-bold" href="#">
+      <img src="http://blessedbarbershop.com/wp-content/uploads/2020/07/gen_logo.png" alt="Blessed Barbershop Logo"
+        class="logo-img" style="height: 40px;">
+    </a>
+
+    <!-- Botón hamburguesa -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContenido"
+      aria-controls="navbarContenido" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenido del navbar -->
+    <div class="collapse navbar-collapse" id="navbarContenido">
+      <!-- Menú centrado -->
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+        <li class="nav-item"><a href="#" class="nav-link active">Inicio</a></li>
+        <li class="nav-item"><a href="#sobre-nosotros" class="nav-link">Nosotros</a></li>
+        <li class="nav-item"><a href="#barberos" class="nav-link">Barberos</a></li>
+        <li class="nav-item"><a href="#reserva" class="nav-link">¿Cómo reservar?</a></li>
+        <li class="nav-item"><a href="#ubicacion" class="nav-link">Ubicación</a></li>
+        <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+        {% if request.session.cliente_id %}
+        <li class="nav-item"><a href="{% url 'mis_reservas' %}" class="nav-link">Mis reservas</a></li>
+        {% endif %}
+        {% if request.session.barbero_id %}
+        <li class="nav-item"><a href="{% url 'ver_reservas' %}" class="nav-link">Ver Reservas</a></li>
+        <li class="nav-item"><a href="{% url 'panel_barbero' %}" class="nav-link">Panel de Barbero</a></li>
+        {% endif %}
+        {% if request.session.admin_id %}
+        <li class="nav-item"><a href="{% url 'panel_servicios' %}" class="nav-link">Panel de Admin</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Botones a la derecha -->
+      <ul class="navbar-nav d-flex align-items-center gap-2 text-center">
+        {% if request.session.cliente_id %}
+        <li class="nav-item">
+          <span class="nav-link">Bienvenid@ {{ request.session.cliente_nombre }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+        </li>
+        {% elif request.session.barbero_id %}
+        <li class="nav-item">
+          <span class="nav-link">Barber@ {{ request.session.barbero_nombre }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+        </li>
+        {% elif request.session.admin_id %}
+        <li class="nav-item">
+          <span class="nav-link">Admin {{ request.session.admin_rut }}</span>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary">Iniciar Sesión</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'signup' %}" class="btn btn-sm btn-outline-warning">Registrarse</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <header class="header" id="inicio">
+
+    <div class="header-content">
+      <h1>Blessed Barbershop</h1>
+      <p>Donde la elegancia y el estilo se encuentran</p>
+      <a href="{% url 'reservas' %}" class="btn btn-dark ">Reserva tu hora</a>
+    </div>
+  </header>
+
+  <section class="container mt-5" id="sobre-nosotros" data-aos="fade-up">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2 class="section-title text-center mb-5">Sobre Nosotros</h2>
+        <p>
+          En <strong>Blessed Barbershop</strong>, creemos que un buen corte no solo mejora tu apariencia, sino también
+          tu actitud. Somos más que una barbería: somos una experiencia. Desde 2020, nos hemos dedicado a ofrecer los
+          mejores servicios de barbería, mezclando técnicas clásicas con tendencias urbanas.
+        </p>
+        <p>
+          Nuestro equipo está formado por profesionales apasionados por el estilo, comprometidos en brindar una atención
+          personalizada, un ambiente relajado y resultados impecables. Ven y vive el arte del grooming como debe ser.
+        </p>
+      </div>
+      <div class="col-md-6 text-center">
+        <img src="https://barberiamc.com/wp-content/uploads/2023/04/slider1.jpg" alt="Interior de Blessed Barbershop"
+          class="img-fluid rounded shadow" />
+      </div>
+    </div>
+  </section>
+  <br><br><br><br>
+
+  <section class="container mt-5" id="barberos">
+    <h2 class="section-title text-center mb-4">Conoce a Nuestros Barberos</h2>
+    <div class="row">
+      {% for barbero in barberos %}
+      <div class="col-md-4">
+        <div class="barber-card shadow-lg p-3 mb-5 bg-dark rounded text-white text-center">
+          <img src="https://cdn-icons-png.flaticon.com/512/2922/2922506.png" alt="Foto de {{ barbero.nombre }}"
+            class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #fff;">
+          <h4 class="mb-1">{{ barbero.nombre }}</h4>
+          <p class="infobarbero mb-2">{{ barbero.descripcion }}</p>
+          <p><strong>Cortes destacados:</strong> {{ barbero.cortes_destacados }}</p>
+          {% if barbero.disponible %}
+            <p class="text-green-400">Disponibilidad: Disponible </p>
+          {% else %}
+            <p class="text-red-400">Disponibilidad: No disponible </p>
+          {% endif %}
+          <span class="badge bg-secondary text-white">{{ barbero.especialidad }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  </section>
+
+  <br><br><br><br>
+
+  <section class="container my-5" id="reserva">
+    <div class="card shadow-lg border-0">
+      <div class="card-body">
+        <h3 class="card-title text-center mb-4">💈 ¿Cómo Reservar? 💈</h3>
+        <ul class="list-group list-group-flush fs-5">
+          <li class="list-group-item">🕐 Debes reservar con <strong>al menos 1 hora de anticipación</strong>.</li>
+          <li class="list-group-item">✏️ Puedes <strong>editar la reserva solo una vez</strong>.</li>
+          <li class="list-group-item">❌ No puedes <strong>cancelar una reserva</strong> si faltan menos de <strong>2
+              horas</strong>.</li>
+          <li class="list-group-item">📅 Elige el barbero, el servicio y selecciona una hora disponible.</li>
+          <li class="list-group-item">✅ La reserva aparecerá en la sección <strong>“Mis Reservas”</strong> después de
+            confirmar.</li>
+          <li class="list-group-item">📲 Una vez reservada, aparecerá como <strong>Pendiente o Realizada</strong> la
+            reserva desde la sección <strong>“Mis Reservas”</strong>.</li>
+          <li class="list-group-item">🔒 Solamente se podrá reservar una vez por día.</li>
+        </ul>
+        <div class="card-footer text-center">
+          <a href="{% url 'reservas' %}" class="btn btn-dark">¡Reserva tu corte ahora!</a>
+        </div>
+      </div>
+  </section>
+
+  <br><br><br><br>
+
+  <section class="container mt-5" id="ubicacion">
+    <h2 class="section-title">Dónde estamos</h2>
+    <div class="ratio ratio-16x9">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!4v1746724794779!6m8!1m7!1shFA3d0Qr-0r7FM2jjEMHTQ!2m2!1d-35.30670729639236!2d-71.51317102560289!3f68.29011515282525!4f-3.5971665928407788!5f0.7820865974627469"
+        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+<footer class="footer mt-5" id="contacto">
+    <p>&copy; 2025 Blessed Barbershop - Todos los derechos reservados</p>
+
+    <div class="footer-bottom">
+        
+        <div id="contactos">
+            <p>Gmail: blessed.barbershop.oficial10@gmail.com</p>
+            <p>Telefono: 943593345</p>
+        </div>
+
+        <div class="wrapper">
+          <div class="connect">
+            <div class="connect">
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/barberia.san.rafael.774832?rdid=Qcyzv3hjosxBce1g&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BvcQDdVUS%2F#" target="_blank" rel="noopener noreferrer"
+          class="share facebook" style="color:#0e53e8; text-decoration:none; font-size:35px; margin-right:15px;">
+          <i class="bi bi-facebook"></i> 
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/blessed_barbershop_/?igsh=MWp6ZzE4d3d5N215MA%3D%3D#" target="_blank" rel="noopener noreferrer"
+          class="share instagram" style="color:#dd0d83; text-decoration:none; font-size:35px;">
+          <i class="bi bi-instagram"></i>
+        </a>
+
+      </div>
+          </div>
+        </div>
+
+        <div></div> 
+
+    </div>
+</footer>
+
+  <script>
+    let lastScroll = 0;
+    const navbar = document.querySelector('.navbar');
+    const navbarOffset = navbar.offsetTop;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+
+      if (currentScroll > lastScroll && currentScroll > navbarOffset + 100) {
+        // Scroll hacia abajo
+        navbar.classList.add('fixed-top');
+      } else if (currentScroll < lastScroll && currentScroll < navbarOffset + 50) {
+        // Scroll hacia arriba casi arriba
+        navbar.classList.remove('fixed-top');
+      }
+
+      lastScroll = currentScroll;
+    });
+  </script>
+
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      duration: 2000
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script>
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled-nav');
+    } else {
+      navbar.classList.remove('scrolled-nav');
+    }
+  });
+</script>
+
+
+
+
+  {% if request.session.cliente_id %}
+  <button id="chat-button" onclick="toggleChat()">💬</button>
+
+  <div id="chatbox" style="display: none;">
+    <div class="chatbox-header">
+      <span>Asistente</span>
+      <button onclick="toggleChat()">✖</button>
+    </div>
+    <div class="chatbox-body" id="chat-content">
+      <div class="msg bot">Hola {{ request.session.nombre_cliente }} 👋 ¿En qué puedo ayudarte?</div>
+      <div class="msg-options">
+        <button onclick="enviarPregunta('Ver mis reservas')">📅 Ver mis reservas</button>
+        <button onclick="enviarPregunta('Ver disponibilidad de hoy')">🕒 Ver disponibilidad de hoy</button>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+  <script src="{% static 'js/chatbox.js' %}"></script>
+
+</body>
+
+</html>

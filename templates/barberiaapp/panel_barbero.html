@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Barbero</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://png.pngtree.com/png-vector/20220818/ourmid/pngtree-barbershop-pole-decoration-png-image_6115703.png" type="image/png">
+
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+    <div><a href="{% url 'index' %}">Volver inicio</a></div>
+    <div class="max-w-7xl mx-auto">
+        
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Panel de Estadísticas - {{ barbero.nombre }}</h1>
+
+        <!-- Filtros -->
+        <form method="get" class="flex flex-col md:flex-row gap-4 mb-8 items-center justify-center">
+            <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}" class="border rounded p-2">
+            <input type="date" name="fecha_fin" value="{{ fecha_fin }}" class="border rounded p-2">
+            <select name="categoria" class="border rounded p-2">
+                <option value="todas" {% if categoria_filtrada == "todas" %}selected{% endif %}>Todas</option>
+                <option value="barba" {% if categoria_filtrada == "barba" %}selected{% endif %}>Barba</option>
+                <option value="cabello" {% if categoria_filtrada == "cabello" %}selected{% endif %}>Cabello</option>
+                <option value="combo" {% if categoria_filtrada == "combo" %}selected{% endif %}>Cabello + Barba</option>
+                <option value="premium" {% if categoria_filtrada == "premium" %}selected{% endif %}>Otros</option>
+            </select>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filtrar</button>
+        </form>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white shadow rounded-lg p-6 text-center">
+                <h2 class="text-xl font-semibold text-gray-700">Cortes Realizados</h2>
+                <p class="text-3xl font-bold text-blue-600 mt-2">{{ clientes_atendidos_totales }}</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-6 text-center">
+                <h2 class="text-xl font-semibold text-gray-700">Clientes únicos</h2>
+                <p class="text-3xl font-bold text-green-600 mt-2">{{ clientes_atendidos_unicos }}</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-6 text-center">
+                <h2 class="text-xl font-semibold text-gray-700">Total reservas</h2>
+                <p class="text-3xl font-bold text-purple-600 mt-2">{{ total_reservas }}</p>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Barras por mes -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4 text-center">Reservas por mes</h2>
+                <div class="h-96">
+                    <canvas id="barrasMeses"></canvas>
+                </div>
+            </div>
+
+            <!-- Torta por categoría -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4 text-center">Reservas por categoría</h2>
+                <div class="h-96">
+                    <canvas id="tortaCategorias"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+// Gráfico de barras - Reservas por mes
+const ctxBarras = document.getElementById('barrasMeses').getContext('2d');
+
+// Lista con los nombres de los meses en español
+const nombresMeses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+// Reemplazar los números de los meses por sus nombres
+const mesesNumeros = {{ meses|safe }};
+const mesesNombres = mesesNumeros.map(m => nombresMeses[m - 1]);
+
+new Chart(ctxBarras, {
+    type: 'bar',
+    data: {
+        labels: mesesNombres,
+        datasets: [{
+            label: 'Reservas por mes',
+            data: {{ totales_por_mes|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+        }
+    }
+});
+
+// Gráfico circular - Reservas por categoría
+const ctxTorta = document.getElementById('tortaCategorias').getContext('2d');
+new Chart(ctxTorta, {
+    type: 'doughnut',
+    data: {
+        labels: {{ categorias|safe }},
+        datasets: [{
+            data: {{ totales_por_categoria|safe }},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' },
+            datalabels: {
+                color: '#fff',
+                font: { weight: 'bold', size: 14 },
+                formatter: (value, context) => {
+                    const data = context.chart.data.datasets[0].data;
+                    const total = data.reduce((a, b) => a + b, 0);
+                    const porcentaje = ((value / total) * 100).toFixed(1);
+                    return porcentaje + '%';
+                }
+            }
+        }
+    },
+    plugins: [ChartDataLabels] // Activar el plugin
+});
+</script>
+</body>
+</html>

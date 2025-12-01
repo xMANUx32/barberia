@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Servicio | Blessed Barbershop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-gray-200 p-8">
+    <div class="max-w-xl mx-auto bg-neutral-900 p-6 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-center mb-6">Agregar Nuevo Servicio</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block mb-1">Categoría</label>
+                <select name="categoria" class="w-full p-2 rounded bg-neutral-800 text-white">
+                    <option value="barba">Barba</option>
+                    <option value="cabello">Cabello</option>
+                    <option value="combo">Cabello + Barba</option>
+                    <option value="premium">Otros</option>
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1">Título</label>
+                <input type="text" name="titulo" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Duración (minutos)</label>
+                <input type="number" name="duracion" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Precio</label>
+                <input type="number" name="precio" required class="w-full p-2 rounded bg-neutral-800 text-white">
+            </div>
+            <div>
+                <label class="block mb-1">Descripción</label>
+                <textarea name="descripcion" rows="4" required class="w-full p-2 rounded bg-neutral-800 text-white"></textarea>
+            </div>
+            <div class="flex justify-between mt-4">
+                <a href="{% url 'panel_servicios' %}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Cancelar</a>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Guardar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
