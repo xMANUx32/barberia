@@ -1,0 +1,7 @@
+Django==5.0.1
+gunicorn
+whitenoise
+mysqlclient
+Pillow
+django-cron
+djangorestframework
