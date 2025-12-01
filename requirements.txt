@@ -7,3 +7,4 @@ django-cron
 djangorestframework
 dj-database-url
 django-widget-tweaks
+reportlab
