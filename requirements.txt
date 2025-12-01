@@ -5,3 +5,4 @@ mysqlclient
 Pillow
 django-cron
 djangorestframework
+import dj_database_url
