@@ -64,13 +64,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
-# 👇👇 Tu MySQL local queda igual, pero Railway lo sobrescribe con DATABASE_URL
+# 👇👇 Conexión a MySQL con soporte Railway
 DATABASES = {
     'default': dj_database_url.config(
         default="mysql://root:@localhost:3306/barberia",
-        conn_max_age=600
+        conn_max_age=600,
+        engine="django.db.backends.mysql",
+        ssl_require=True
     )
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
