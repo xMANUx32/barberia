@@ -66,13 +66,16 @@ WSGI_APPLICATION = 'barberia.wsgi.application'
 
 # 👇👇 Conexión a MySQL con soporte Railway
 DATABASES = {
-    'default': dj_database_url.config(
-        default="mysql://root:@localhost:3306/barberia",
-        conn_max_age=600,
-        engine="django.db.backends.mysql",
-        ssl_require=True
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'pLhrfBDVgCWMUByZdnaviqCEobTPknTH',
+        'HOST': 'mysql.railway.internal',
+        'PORT': '3306',
+    }
 }
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
